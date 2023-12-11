@@ -1,0 +1,33 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class ExceptionHandlingTest {
+
+    public static void main(String[] args) {
+        // Set the path to the ChromeDriver executable
+        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
+
+        // Create a new instance of the Chrome driver
+        WebDriver driver = new ChromeDriver();
+
+        // Open a sample website
+        driver.get("https://example.com");
+
+        try {
+            // Attempt to locate a non-existing element
+            WebElement nonExistingElement = driver.findElement(By.id("nonExistingElement"));
+
+            // Perform some action with the element (this won't be executed in this example)
+            nonExistingElement.click();
+        } catch (NoSuchElementException e) {
+            // Handle the NoSuchElementException
+            System.out.println("Element not found. Exception message: " + e.getMessage());
+        } finally {
+            // Close the browser window
+            driver.quit();
+        }
+    }
+}

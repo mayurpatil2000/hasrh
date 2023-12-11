@@ -1,0 +1,55 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class LoginTest {
+
+    public static void main(String[] args) {
+        // Set the path to the ChromeDriver executable
+        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
+
+        // Create a new instance of the Chrome driver
+        WebDriver driver = new ChromeDriver();
+
+        // Open the website (replace 'https://yourwebsite.com' with your actual URL)
+        String url = "https://yourwebsite.com";
+        driver.get(url);
+
+        // Navigate to the login page
+        WebElement loginLink = driver.findElement(By.linkText("Login")); // Replace 'Login' with the actual link text or locator
+        loginLink.click();
+
+        // Enter the username and password
+        WebElement usernameField = driver.findElement(By.id("username")); // Replace 'username' with the actual ID of the username field
+        WebElement passwordField = driver.findElement(By.id("password")); // Replace 'password' with the actual ID of the password field
+
+        usernameField.sendKeys("your_username");
+        passwordField.sendKeys("your_password");
+
+        // Click the login button
+        WebElement loginButton = driver.findElement(By.id("loginButton")); // Replace 'loginButton' with the actual ID of the login button
+        loginButton.click();
+
+        // Wait for a few seconds to see the results or perform assertions
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Perform assertions to verify the successful login
+        WebElement welcomeMessage = driver.findElement(By.id("welcomeMessage")); // Replace 'welcomeMessage' with the actual ID of the welcome message
+        String actualMessage = welcomeMessage.getText();
+        String expectedMessage = "Welcome, User!"; // Replace with your expected welcome message
+
+        if (actualMessage.equals(expectedMessage)) {
+            System.out.println("Login Test Passed!");
+        } else {
+            System.out.println("Login Test Failed!");
+        }
+
+        // Close the browser window
+        driver.quit();
+    }
+}
