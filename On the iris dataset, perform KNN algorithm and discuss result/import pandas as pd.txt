@@ -1,0 +1,82 @@
+import pandas as pd
+iris = pd.read_csv("iris.csv")
+import matplotlib.pyplot as plt # mostly used for visualization purposes
+import numpy as np
+import seaborn as sns
+sns.distplot(iris['SepalLengthCm'], kde=False,label='Sepal.Length')
+sns.distplot(iris['SepalWidthCm'], kde=False,label='Sepal.Width')
+sns.distplot(iris['PetalLengthCm'], kde=False,label='Petal.Length')
+sns.distplot(iris['PetalWidthCm'], kde=False,label='Petal.Width')
+plt.legend()
+
+
+# 'Sepal.Length'
+bins = [1,2,3,4,5,6,7,8]
+plt.figure(figsize=(5,4))
+sns.set() # light color background
+sns.distplot(iris["SepalLengthCm"],bins = bins, kde=False)
+plt.xticks(bins) # x-axis (1-8)
+plt.title("Histogram of Sepal.Length")
+plt.show()
+iris["SepalLengthCm"].value_counts()
+
+
+# 'Sepal.Width'
+bins = [1,2,3,4,5]
+plt.figure(figsize=(5,4))
+sns.set() # light color background
+sns.distplot(iris["SepalWidthCm"],bins = bins, kde=False)
+plt.xticks(bins) # x-axis (1-8)
+plt.title("Histogram of Sepal.Width")
+plt.show()
+iris["SepalWidthCm"].value_counts()
+
+
+# 'Petal.Length'
+bins = [1,2,3,4,5,6,7]
+plt.figure(figsize=(5,4))
+sns.set() # light color background
+sns.distplot(iris["PetalLengthCm"],bins = bins,kde=False)
+plt.xticks(bins) # x-axis (1-8)
+plt.title("Histogram of Petal.Length")
+plt.show()
+iris["PetalLengthCm"].value_counts()
+
+
+#'Petal.Width'
+bins = [0,1,2,3]
+plt.figure(figsize=(5,4))
+sns.set() # light color background
+sns.distplot(iris["PetalWidthCm"],bins = bins, kde=False)
+plt.xticks(bins) # x-axis (1-8)
+plt.title("Histogram of Petal.Widthh")
+plt.show()
+iris["PetalWidthCm"].value_counts()
+
+
+#preparing data with scaling
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+feature_names = ['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']
+x=iris[feature_names]
+y=iris['Species']
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=0)
+print(x_train[:3]) # to check output
+scaler = MinMaxScaler()
+x_train=scaler.fit_transform(x_train)
+x_test= scaler.transform(x_test)
+print("\nAfter scaling\n")
+print(x_train[:3]) # to check output
+
+
+from sklearn.neighbors import KNeighborsClassifier
+# KNN method
+knn = KNeighborsClassifier()
+knn.fit(x_train, y_train)
+#print score of train data
+print('Accuracy of KNN classifier on training set:{:.2f}'
+.format(knn.score(x_train, y_train)))
+#print score of test data
+print('Accuracy of KNN Classifier on test set:{:.2f}'
+.format(knn.score(x_test, y_test)))

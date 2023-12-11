@@ -1,0 +1,112 @@
+import pandas as pd # to load dataset
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pylab as pl
+from sklearn.model_selection import train_test_split # for splitting dataset
+from sklearn.preprocessing import MinMaxScaler # for scaling
+from sklearn.linear_model import LogisticRegression # machine learning lib/model, # get accuracy by Logistic regression
+from sklearn.tree import DecisionTreeClassifier # get accuracy by Decision Tree classifier
+from sklearn.neighbors import KNeighborsClassifier # get accuracy by KNN classifier
+from sklearn.naive_bayes import GaussianNB # get accuracy by GNB classifier
+df=pd.read_csv('fruit.csv')
+df.shape
+df.describe()
+
+
+print(df['fruit_name'].unique())  # Unique fruits name
+print(df['fruit_subtype'].unique())  # Unique fruit subtype
+
+# Count plot with rotated x-axis labels
+plt.figure(figsize=(10, 6))  # Adjust the figure size if needed
+sns.countplot(x='fruit_name', data=df, label='Count')
+plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+plt.show()
+
+
+df.drop('fruit_label',axis=1).plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False, figsize=(6,6), title='Box Plot for each input variable')
+plt.savefig('fruits_box')
+plt.show()
+
+
+import pylab as pl
+df.drop('fruit_label', axis=1).hist(bins=30, figsize=(9,9))
+pl.suptitle("Histogram for each numeric input variable")
+plt.savefig('fruits_hist')
+
+
+#scaterplot
+sns.scatterplot(data=df)
+
+
+#preparing data with scaling
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+feature_names = ['mass', 'width', 'height', 'color_score']
+x=df[feature_names]
+y=df['fruit_label']
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=0)
+print(x_train[:3]) # to check output
+scaler = MinMaxScaler()
+x_train=scaler.fit_transform(x_train)
+x_test= scaler.transform(x_test)
+print("\nAfter scaling\n")
+print(x_train[:3]) # to check output
+
+
+from sklearn.neighbors import KNeighborsClassifier
+# KNN method
+knn = KNeighborsClassifier()
+knn.fit(x_train, y_train)
+#print score of train data
+print('Accuracy of KNN classifier on training set:{:.2f}'
+.format(knn.score(x_train, y_train)))
+#print score of test data
+print('Accuracy of KNN Classifier on test set:{:.2f}'
+.format(knn.score(x_test, y_test)))
+
+from sklearn.naive_bayes import GaussianNB
+# Gaussian Naive bayes
+gnb = GaussianNB()
+gnb.fit(x_train, y_train)
+#print score of train data
+print('Accuracy of GNB classifier on training set:{:.2f}'
+.format(gnb.score(x_train, y_train)))
+#print score of test data
+print('Accuracy of GNB Classifier on test set:{:.2f}'
+.format(gnb.score(x_test, y_test)))
+
+
+#confusion matrix for KNN
+import sklearn
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+# Assuming you have already trained your classification models, e.g., K-Nearest Neighbors (knn)
+y_pred_knn = knn.predict(x_test) # Make predictions on the test data
+# Create the confusion matrix for K-Nearest Neighbors
+confusion_knn = confusion_matrix(y_test, y_pred_knn)
+# Create a heatmap of the confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(confusion_knn, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.title('Confusion Matrix for K-Nearest Neighbors')
+plt.show()
+
+
+#confusion matrix for naive bayes
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+# Assuming you have already trained your classification models
+y_pred_gnb = gnb.predict(x_test) # Make predictions on the test data
+# Create the confusion matrix
+confusion_gnb = confusion_matrix(y_test, y_pred_gnb)
+# Create a heatmap of the confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(confusion_gnb, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.title('Confusion Matrix for naive_bayes')
+plt.show()

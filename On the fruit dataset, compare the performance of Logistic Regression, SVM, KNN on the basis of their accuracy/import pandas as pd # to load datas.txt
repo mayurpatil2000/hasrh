@@ -1,0 +1,94 @@
+import pandas as pd # to load dataset
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pylab as pl
+from sklearn.model_selection import train_test_split # for splitting dataset
+from sklearn.preprocessing import MinMaxScaler # for scaling
+from sklearn.linear_model import LogisticRegression # machine learning lib/model, # get accuracy by Logistic regression
+from sklearn.tree import DecisionTreeClassifier # get accuracy by Decision Tree classifier
+from sklearn.neighbors import KNeighborsClassifier # get accuracy by KNN classifier
+from sklearn.naive_bayes import GaussianNB # get accuracy by GNB classifier
+df=pd.read_csv('fruit.csv')
+df.shape
+df.describe()
+
+print(df['fruit_name'].unique()) # unique fruits name
+
+print(df['fruit_subtype'].unique()) # unique fruit subtype
+
+sns.countplot(x='fruit_name', data=df, label='Count')  # count plot
+plt.show()
+
+df.drop('fruit_label',axis=1).plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False, figsize=(6,6), title='Box Plot for each input variable')
+plt.savefig('fruits_box')
+plt.show()
+
+import pylab as pl
+df.drop('fruit_label', axis=1).hist(bins=30, figsize=(9,9))
+pl.suptitle("Histogram for each numeric input variable")
+plt.savefig('fruits_hist')
+
+#scaterplot
+sns.scatterplot(data=df)
+
+#preparing data with scaling
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+feature_names = ['mass', 'width', 'height', 'color_score']
+x=df[feature_names]
+y=df['fruit_label']
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=0)
+print(x_train[:3]) # to check output
+scaler = MinMaxScaler()
+x_train=scaler.fit_transform(x_train)
+x_test= scaler.transform(x_test)
+print("\nAfter scaling\n")
+print(x_train[:3]) # to check output
+
+from sklearn.linear_model import LogisticRegression # machine learning lib/model
+feature_names = ['mass', 'width', 'height', 'color_score']
+x=df[feature_names]
+y=df['fruit_label']
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=0)
+scaler = MinMaxScaler()
+x_train=scaler.fit_transform(x_train)
+x_test= scaler.transform(x_test)
+#logistic regression
+logreg = LogisticRegression() # machine learning algorithm
+logreg.fit(x_train, y_train)
+#print score of train data
+print('Accuracy of Logistic regression classifier on training set:{:.2f}'
+.format(logreg.score(x_train, y_train)))
+#print score of test data
+print('Accuracy of Logistic regression classifier on test set:{:.2f}'
+.format(logreg.score(x_test, y_test)))
+
+
+from sklearn.neighbors import KNeighborsClassifier
+# KNN method
+knn = KNeighborsClassifier()
+knn.fit(x_train, y_train)
+#print score of train data
+print('Accuracy of KNN classifier on training set:{:.2f}'
+.format(knn.score(x_train, y_train)))
+#print score of test data
+print('Accuracy of KNN Classifier on test set:{:.2f}'
+.format(knn.score(x_test, y_test)))
+
+
+from sklearn.svm import SVC
+# SVM classifier
+svm = SVC()
+svm.fit(x_train, y_train)
+#print score of train data
+print('Accuracy of SVM classifier on training set:{:.2f}'
+.format(svm.score(x_train, y_train)))
+#print score of test data
+print('Accuracy of SVM Classifier on test set:{:.2f}'
+.format(svm.score(x_test, y_test)))
+
+
+data = {'Training Accuracy (in %)':[75,95,91],'Testing Accuracy (in %)':[47,100,80]}
+df1 = pd.DataFrame(data, index =['Logistic Regression','K-Nearest Neighbour (KNN)','Support Vector Machine (SVM)'])
+df1

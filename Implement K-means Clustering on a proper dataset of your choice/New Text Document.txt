@@ -1,0 +1,84 @@
+import pandas as pd # for Data Manipulation
+import matplotlib.pyplot as plt # for Visualization
+import numpy as np #for Mathematical calculations
+import seaborn as sns #for Advanced visualizations
+crime = pd.read_csv("crime_data.csv")
+crime.head()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Assuming you have loaded your dataset into the 'crime' DataFrame
+# If not, load your dataset using: crime = pd.read_csv("your_dataset.csv")
+
+# Display the original columns in the dataset
+print(crime.columns)
+
+# Create a new 'State' column and rearrange the DataFrame
+crime['State'] = crime.iloc[:, 0]
+crime = crime[['State', 'state', 'crime', 'murder', 'pctmetro']]  # Adjust column names accordingly
+
+def norm_func(i):
+    x = (i - i.min()) / (i.max() - i.min())
+    return x
+
+# Select only numeric columns
+numeric_columns = crime.select_dtypes(include=[np.number]).columns
+
+# Normalized data frame (considering the numerical part of data)
+df_norm = crime[numeric_columns].apply(norm_func)
+
+# Univariate histograms
+plt.hist(df_norm["crime"])
+plt.hist(df_norm["murder"])
+plt.hist(df_norm["pctmetro"])
+
+# Display skewness and kurtosis
+print(df_norm.skew(axis=0, skipna=True))
+print(df_norm.kurtosis(axis=0, skipna=True))
+
+plt.show()
+
+
+
+# calculating TWSS - Total within SS using different cluster range
+from sklearn.cluster import KMeans
+
+TWSS = []
+k = list(range(2, 8))
+
+for i in k:
+    kmeans = KMeans(n_clusters=i)
+    kmeans.fit(df_norm)
+    TWSS.append(kmeans.inertia_)
+
+TWSS
+
+
+# Plotting the Scree plot using the TWSS from above defined function
+plt.plot(k, TWSS, 'ro-');plt.xlabel("No_of_Clusters");plt.ylabel("total_within_SS")
+
+
+from sklearn.cluster import KMeans
+import pandas as pd
+
+# Assuming df_norm is your normalized DataFrame
+model = KMeans(n_clusters=4)
+model.fit(df_norm)
+crime['clust'] = model.labels_  # Assigning cluster labels to the 'clust' column
+
+# Rearranging columns
+crime = crime.iloc[:, [5, 0, 1, 2, 3, 4]]
+crime.head()
+
+# Correcting the column selection
+numeric_columns = crime.columns[1:6]  # Assuming columns 1 through 5 are numeric
+
+# Convert non-numeric values to NaN
+crime[numeric_columns] = crime[numeric_columns].apply(pd.to_numeric, errors='coerce')
+
+# Calculating mean for each cluster (excluding non-numeric columns)
+cluster_means = crime.groupby('clust')[numeric_columns].mean()
+
+# Displaying the mean for each cluster
+print(cluster_means)
